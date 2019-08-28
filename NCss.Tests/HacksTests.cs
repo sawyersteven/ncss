@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NCss.Parsers;
-using NUnit.Framework;
+using System.Linq;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class HacksTests
     {
         static Stylesheet Test(string input, string expected = null, int count = 1)
@@ -17,7 +13,7 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(p.IsValid, "invlid css");
             Assert.AreEqual(count, p.Rules.Count);
@@ -26,47 +22,47 @@ namespace NCss.Tests
         }
 
 
-        [Test]
+        [TestMethod]
         public void WithStar()
         {
             var sh = ".cl{*prop:white;}";
             var p = Test(sh);
-            Assert.True(p.Rules.Single().Properties.Single().HasStar);
+            Assert.IsTrue(p.Rules.Single().Properties.Single().HasStar);
         }
 
-        [Test]
+        [TestMethod]
         public void With9()
         {
 
             var sh = "div{margin-top:1px\\9;}";
             var p = Test(sh);
-            Assert.True(p.Rules.Single().Properties.Single().HasSlash9);
+            Assert.IsTrue(p.Rules.Single().Properties.Single().HasSlash9);
         }
 
-        [Test]
+        [TestMethod]
         public void With0()
         {
             var sh = "#div{height:300px\\0/;}";
             var p = Test(sh);
-            Assert.True(p.Rules.Single().Properties.Single().HasSlash0);
+            Assert.IsTrue(p.Rules.Single().Properties.Single().HasSlash0);
         }
 
-        [Test]
+        [TestMethod]
         public void IE_WithDxTransform()
         {
             var sh = "div{filter:progid:DXImageTransform.Microsoft.gradient(enabled=false);}";
             Test(sh);
         }
 
-        [Test]
+        [TestMethod]
         public void IE6Only()
         {
             var sh = "* html #div{height:300px;}";
             Test(sh);
         }
 
-        [Test]
-        [Ignore("To be fixed ? that's a pretty shitty & useless one.")]
+        [TestMethod]
+        [Ignore] // To be fixed ? that's a pretty shitty & useless one.
         public void Safari2Opera925()
         {
             // Parsed as "* #catorce{color:red;}"
@@ -76,21 +72,21 @@ namespace NCss.Tests
             Test(sh);
         }
 
-        [Test]
+        [TestMethod]
         public void IE7Only()
         {
             var sh = "*+html #div{height:300px;}";
             Test(sh);
         }
 
-        [Test]
+        [TestMethod]
         public void IE6Prop()
         {
             var sh = ".class{_prop:val;}";
             Test(sh);
         }
 
-        [Test]
+        [TestMethod]
         public void BangHack()
         {
             var sh = ".class{_prop:val!ie7;}";

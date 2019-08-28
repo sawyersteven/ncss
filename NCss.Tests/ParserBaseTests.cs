@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class ParserBaseTests
     {
         class TestParser : ParserBase
@@ -36,29 +31,29 @@ namespace NCss.Tests
                 Assert.AreEqual(0, this.Errors.Count);
             }
 
-            public void ExpectString(string str, bool withError=false)
+            public void ExpectString(string str, bool withError = false)
             {
                 Errors.Clear();
                 Assert.AreEqual(str, PickString());
-                if(withError)
+                if (withError)
                     Assert.AreNotEqual(0, this.Errors.Count);
                 else
                     Assert.AreEqual(0, this.Errors.Count);
             }
 
-            public void TestSkipUntil(char c, bool end=true)
+            public void TestSkipUntil(char c, bool end = true)
             {
                 SkipUntil(c);
                 Assert.AreEqual(c, CurrentChar);
                 Index++;
-                Assert.AreEqual(End,end);
+                Assert.AreEqual(End, end);
             }
 
             public void IndexPlus(int cnt)
             {
                 var i = Index;
-                Index+=cnt;
-                Assert.Greater(Index,i);
+                Index += cnt;
+                Assert.IsTrue(Index > i);
                 Assert.AreNotEqual(Index, i + cnt); // comments supposted to have been skipped
             }
 
@@ -68,7 +63,7 @@ namespace NCss.Tests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void SkipSpaces()
         {
             var tp = new TestParser();
@@ -76,7 +71,7 @@ namespace NCss.Tests
             tp.SkipSpaceTests();
         }
 
-        [Test]
+        [TestMethod]
         public void SkipComments()
         {
             var tp = new TestParser();
@@ -84,7 +79,7 @@ namespace NCss.Tests
             tp.SkipSpaceTests();
         }
 
-        [Test]
+        [TestMethod]
         public void SkipCommentsAndSpaces()
         {
             var tp = new TestParser();
@@ -92,7 +87,7 @@ namespace NCss.Tests
             tp.SkipSpaceTests();
         }
 
-        [Test]
+        [TestMethod]
         public void GetWord()
         {
             var tp = new TestParser();
@@ -110,7 +105,7 @@ namespace NCss.Tests
             tp.ExpectName(null);
         }
 
-        [Test]
+        [TestMethod]
         public void GetNumber()
         {
             var tp = new TestParser();
@@ -138,7 +133,7 @@ namespace NCss.Tests
             tp.ExpectName("-x");
         }
 
-        [Test]
+        [TestMethod]
         public void GetString()
         {
             var tp = new TestParser();
@@ -153,7 +148,7 @@ namespace NCss.Tests
             tp.ExpectString(null);
         }
 
-        [Test]
+        [TestMethod]
         public void SkipUntilTest()
         {
             var tp = new TestParser();
@@ -162,7 +157,7 @@ namespace NCss.Tests
         }
 
 
-        [Test]
+        [TestMethod]
         public void ImplicitCommentSkip()
         {
             var tp = new TestParser();
@@ -173,7 +168,7 @@ namespace NCss.Tests
             tp.ExpectName("second");
         }
 
-        [Test]
+        [TestMethod]
         public void Values()
         {
             var tp = new TestParser();

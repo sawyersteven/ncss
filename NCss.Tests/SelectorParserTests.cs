@@ -1,12 +1,12 @@
-﻿using NCss.Parsers;
-using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NCss.Parsers;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class SelectorParserTests
     {
-        [Test]
+        [TestMethod]
         public void Simple()
         {
             var parser = new SimpleSelectorParser();
@@ -19,7 +19,7 @@ namespace NCss.Tests
             Assert.AreEqual(SimpleSelector.Type.Class, cl.SelectorType);
         }
 
-        [Test]
+        [TestMethod]
         public void Not()
         {
             var parser = new SimpleSelectorParser();
@@ -30,11 +30,11 @@ namespace NCss.Tests
             Assert.IsTrue(not != null && not.IsValid, "invalid selector");
             Assert.AreEqual(":not(.notclass)", not.ToString());
             Assert.IsTrue(not.HasArgument);
-            Assert.IsInstanceOf<SimpleSelector>(not.SelectorArgument);
+            Assert.IsInstanceOfType(not.SelectorArgument, typeof(SimpleSelector));
             Assert.IsNull(not.Argument);
         }
 
-        [Test]
+        [TestMethod]
         public void NotFollowedBySpace()
         {
             var parser = new SelectorParser();
@@ -47,7 +47,7 @@ namespace NCss.Tests
         }
 
 
-        [Test]
+        [TestMethod]
         public void Lang()
         {
             var parser = new SimpleSelectorParser();
@@ -62,7 +62,7 @@ namespace NCss.Tests
             Assert.IsNull(not.SelectorArgument);
         }
 
-        [Test]
+        [TestMethod]
         public void NthChild()
         {
             var parser = new SimpleSelectorParser();
@@ -79,7 +79,7 @@ namespace NCss.Tests
             Assert.IsTrue(not != null && not.IsValid, "invalid selector");
         }
 
-        [Test]
+        [TestMethod]
         public void ElementType()
         {
             var parser = new SimpleSelectorParser();
@@ -92,7 +92,7 @@ namespace NCss.Tests
             Assert.AreEqual(SimpleSelector.Type.ElementType, not.SelectorType);
         }
 
-        [Test]
+        [TestMethod]
         public void Plus()
         {
             var parser = new SelectorParser();
@@ -104,9 +104,9 @@ namespace NCss.Tests
             Assert.AreEqual("li:first-of-type+li", not.ToString());
         }
 
-        
 
-        [Test]
+
+        [TestMethod]
         public void Complex()
         {
             var parser = new SelectorParser();
@@ -115,11 +115,11 @@ namespace NCss.Tests
             Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(sel != null && sel.IsValid, "invalid selector");
-            Assert.NotNull(sel);
+            Assert.IsNotNull(sel);
             Assert.AreEqual(".parent>.child#withcondition[and='attr']~.subchild:not(.notclass#notdiv xx)::test .subsub:lang(en):nth-of-type(3)", sel.ToString());
         }
 
-        //[Test]
+        //[TestMethod]
         //public void InvalidSelector()
         //{
         //    var parser = new SelectorParser();
@@ -128,7 +128,7 @@ namespace NCss.Tests
         //    Assert.IsTrue(parser.End);
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<InvalidSelector>(sel);
+        //    Assert.IsInstanceOfType<InvalidSelector>(sel);
         //    Assert.AreEqual("", sel.ToString());
         //    Assert.AreEqual("0x", sel.ToString(CssRestitution.OriginalWhenErrorOrInvalid));
 
@@ -136,21 +136,21 @@ namespace NCss.Tests
         //    sel = parser.DoParse();
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<InvalidSelector>(sel);
+        //    Assert.IsInstanceOfType<InvalidSelector>(sel);
         //    Assert.AreEqual("", sel.ToString());
         //    Assert.AreEqual("%x", sel.ToString(CssRestitution.OriginalWhenErrorOrInvalid));
         //    Assert.AreEqual(';', parser.CurrentChar);
-            
+
         //    parser.SetContext("1x.c");
         //    sel = parser.DoParse();
         //    Assert.IsTrue(parser.End);
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<MultiConditionSelector>(sel);
+        //    Assert.IsInstanceOfType<MultiConditionSelector>(sel);
         //    var lst = ((MultiConditionSelector) sel).Conditions;
         //    Assert.AreEqual(2, lst.Count);
-        //    Assert.IsInstanceOf<InvalidSelector>(lst[0]);
-        //    Assert.IsInstanceOf<SimpleSelector>(lst[1]);
+        //    Assert.IsInstanceOfType<InvalidSelector>(lst[0]);
+        //    Assert.IsInstanceOfType<SimpleSelector>(lst[1]);
         //    Assert.AreEqual("1x", lst[0].ToString(CssRestitution.OriginalWhenErrorOrInvalid));
         //    Assert.AreEqual(".c", lst[1].ToString());
 
@@ -160,7 +160,7 @@ namespace NCss.Tests
         //    Assert.IsTrue(parser.End);
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<InvalidSelector>(sel);
+        //    Assert.IsInstanceOfType<InvalidSelector>(sel);
         //    Assert.AreEqual("1x(.c)", sel.ToString(CssRestitution.OriginalWhenErrorOrInvalid));
 
         //    parser.SetContext("1x(.c");
@@ -168,26 +168,26 @@ namespace NCss.Tests
         //    Assert.IsTrue(parser.End);
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<InvalidSelector>(sel);
+        //    Assert.IsInstanceOfType<InvalidSelector>(sel);
         //    Assert.AreEqual("1x(.c", sel.ToString(CssRestitution.OriginalWhenErrorOrInvalid));
 
-            
+
         //    parser.SetContext("1x(.c).x");
         //    sel = parser.DoParse();
         //    Assert.IsTrue(parser.End);
         //    Assert.AreEqual(1, parser.Errors.Count);
         //    Assert.IsFalse(sel.IsValid);
-        //    Assert.IsInstanceOf<MultiConditionSelector>(sel);
+        //    Assert.IsInstanceOfType<MultiConditionSelector>(sel);
         //    lst = ((MultiConditionSelector)sel).Conditions;
         //    Assert.AreEqual(2, lst.Count);
-        //    Assert.IsInstanceOf<InvalidSelector>(lst[0]);
-        //    Assert.IsInstanceOf<SimpleSelector>(lst[1]);
+        //    Assert.IsInstanceOfType<InvalidSelector>(lst[0]);
+        //    Assert.IsInstanceOfType<SimpleSelector>(lst[1]);
         //    Assert.AreEqual("1x(.c)", lst[0].ToString(CssRestitution.OriginalWhenErrorOrInvalid));
         //    Assert.AreEqual(".x", lst[1].ToString());
 
         //}
 
-        [Test]
+        [TestMethod]
         public void AllSelector()
         {
             var parser = new SelectorParser();
@@ -196,11 +196,11 @@ namespace NCss.Tests
             Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(ch != null && ch.IsValid, "invalid selector");
-            Assert.IsInstanceOf<SimpleSelector>(ch);
-            Assert.AreEqual(SimpleSelector.Type.All, ((SimpleSelector) ch).SelectorType);
+            Assert.IsInstanceOfType(ch, typeof(SimpleSelector));
+            Assert.AreEqual(SimpleSelector.Type.All, ((SimpleSelector)ch).SelectorType);
         }
 
-        [Test]
+        [TestMethod]
         public void ChildSelectorTest()
         {
             var parser = new ChildSelectorParser();
@@ -210,8 +210,8 @@ namespace NCss.Tests
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(ch != null && ch.IsValid, "invalid selector");
             Assert.AreEqual(ChildSelector.ChildType.DirectChild, ch.Type);
-            Assert.IsInstanceOf<SimpleSelector>(ch.Child);
-            var cl = (SimpleSelector) ch.Child;
+            Assert.IsInstanceOfType(ch.Child, typeof(SimpleSelector));
+            var cl = (SimpleSelector)ch.Child;
             Assert.AreEqual("my-class", cl.Name);
             Assert.AreEqual(SimpleSelector.Type.Class, cl.SelectorType);
 
@@ -230,25 +230,25 @@ namespace NCss.Tests
             Assert.AreEqual(ChildSelector.ChildType.FirstPredecesorOf, ch.Type);
         }
 
-        [Test]
+        [TestMethod]
         public void SelectorList()
         {
             var parser = new SelectorParser();
             parser.SetContext(".cl1,.cl2");
             var p = parser.DoParse();
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(parser.End);
-            Assert.IsInstanceOf<SelectorList>(p);
-            var pl = (SelectorList) p;
+            Assert.IsTrue(parser.End);
+            Assert.IsInstanceOfType(p, typeof(SelectorList));
+            var pl = (SelectorList)p;
             Assert.AreEqual(2, pl.Selectors.Count);
             Assert.AreEqual(".cl1,.cl2", pl.ToString());
             var c1 = pl.Selectors[0];
             var c2 = pl.Selectors[1];
-            Assert.IsInstanceOf<SimpleSelector>(c1);
-            Assert.IsInstanceOf<SimpleSelector>(c2);
+            Assert.IsInstanceOfType(c1, typeof(SimpleSelector));
+            Assert.IsInstanceOfType(c2, typeof(SimpleSelector));
         }
 
-        [Test]
+        [TestMethod]
         public void Condition()
         {
             var parser = new AttributeConditionParser();
@@ -287,13 +287,13 @@ namespace NCss.Tests
 
 
 
-        [Test]
+        [TestMethod]
         public void DirectiveSelector()
         {
             var parser = new DirectiveSelectorParser();
             parser.SetContext("@xxx lksqdf/* ; { */ ss{");
             var cl = parser.DoParse();
-            Assert.AreEqual('{',parser.CurrentChar);
+            Assert.AreEqual('{', parser.CurrentChar);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(cl != null && cl.IsValid, "invalid selector");
             Assert.AreEqual("xxx", cl.Name);

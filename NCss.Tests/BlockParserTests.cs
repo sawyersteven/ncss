@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NCss.Parsers;
-using NUnit.Framework;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class BlockParserTests
     {
         static Stylesheet Test(string input, string expected = null, int count = 1)
@@ -17,7 +12,7 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.IsTrue(p.IsValid, "invlid css");
             Assert.AreEqual(count, p.Rules.Count);
@@ -26,7 +21,7 @@ namespace NCss.Tests
         }
 
 
-        [Test]
+        [TestMethod]
         public void _1_OneClassNoContent()
         {
             var sh = ".class{}";
@@ -36,7 +31,7 @@ namespace NCss.Tests
             Test(" .class[cond] test { \n  } ", ".class[cond] test{}");
         }
 
-        [Test]
+        [TestMethod]
         public void _2_MultipleClassesNoContent()
         {
             var sh = ".c1{}#c2{}";
@@ -44,7 +39,7 @@ namespace NCss.Tests
             Test(".c1{ \n }\n  #c2{ }  ", sh, count: 2);
         }
 
-        [Test]
+        [TestMethod]
         public void _3_SingleWithContent()
         {
             var sh = ".cl{background-color:red;margin:5px;}";

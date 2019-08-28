@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class CloneTests
     {
         // NB: Most of the tests are performed via RealTests (cloned on each library tested)
 
 
-        [Test]
+        [TestMethod]
         public void ClonePercentSubRules()
         {
             var input = "@-webkit-keyframes AdsAssetSelector_highlight{0%{background-color:#fff;}}";
@@ -23,7 +23,7 @@ namespace NCss.Tests
             Assert.AreEqual(input, s2.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void FilterHovers()
         {
             var input = "@media test{.cl{prop:any}.cl:hover{prop:keep}}@media empty{.cl{}}.clrem{}.clkeep:hover{prop:keep}.clkeep, .other:hover{any:x}.clkeep .test:hover{any:y}.keep:not(:hover){any:z}";

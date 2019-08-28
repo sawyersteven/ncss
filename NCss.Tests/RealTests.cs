@@ -1,13 +1,13 @@
-﻿using System.IO;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NCss.Parsers;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using NCss.Parsers;
-using NUnit.Framework;
 
 namespace NCss.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class RealTests
     {
         string GetTestFile(string file)
@@ -24,53 +24,53 @@ namespace NCss.Tests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void TwoBracesAtOnce()
         {
             var input = "@media print{.table-bordered th{border:1px solid #ddd !important;}}@font-face{font-family:'Glyphicons Halflings';}";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
             Assert.AreEqual(input, p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void AllSelectorBlock()
         {
             var input = "*{color:blue;}";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
             Assert.AreEqual(input, p.ToString());
         }
-        [Test]
+        [TestMethod]
         public void OrphanBlock()
         {
             var input = "{color:blue;}.class{color:red;}";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(1, parser.Errors.Count);
-            Assert.False(p.IsValid, "must be invalid css");
+            Assert.IsFalse(p.IsValid, "must be invalid css");
             Assert.AreEqual(".class{color:red;}", p.ToString());
             Assert.AreEqual(input, p.ToString(CssRestitution.OriginalWhenErrorOrInvalid));
             Assert.AreEqual(2, p.Rules.Count);
-            Assert.IsInstanceOf<OrphanBlockRule>(p.Rules[0]);
-            Assert.IsInstanceOf<ClassRule>(p.Rules[1]);
-            Assert.True(p.Rules[1].IsValid);
-            Assert.AreEqual(".class{color:red;}",p.Rules[1].ToString());
+            Assert.IsInstanceOfType(p.Rules[0], typeof(OrphanBlockRule));
+            Assert.IsInstanceOfType(p.Rules[1], typeof(ClassRule));
+            Assert.IsTrue(p.Rules[1].IsValid);
+            Assert.AreEqual(".class{color:red;}", p.Rules[1].ToString());
         }
 
 
-        [Test]
+        [TestMethod]
         public void ManuallyBuiltCss()
         {
             var sheet = new Stylesheet
@@ -101,23 +101,23 @@ namespace NCss.Tests
                 }
             };
 
-            Assert.That(sheet.IsValid);
+            Assert.IsTrue(sheet.IsValid);
             Assert.AreEqual(@".classname{color:#fff;background-image:url(test.png);}@media (max-width: 600px){.mediaclass{*opacity:0.5;}}", sheet.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void SeemsToBeAnOperation()
         {
             var input = ".class{background-position: 9px -20px;}";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
-            Assert.True(p.IsValid, "must be valid css");
+            Assert.IsTrue(parser.End);
+            Assert.IsTrue(p.IsValid, "must be valid css");
             Assert.AreEqual(".class{background-position:9px -20px;}", p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void SpaceIssue1()
         {
 
@@ -125,12 +125,12 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
-            Assert.True(p.IsValid, "must be valid css");
+            Assert.IsTrue(parser.End);
+            Assert.IsTrue(p.IsValid, "must be valid css");
             Assert.AreEqual(".class{outline:5px auto -webkit-focus-ring-color;}", p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void SpaceIssue2()
         {
 
@@ -138,12 +138,12 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
-            Assert.True(p.IsValid, "must be valid css");
+            Assert.IsTrue(parser.End);
+            Assert.IsTrue(p.IsValid, "must be valid css");
             Assert.AreEqual(".class{-webkit-box-shadow:inset 0 -1px 0 rgba(0,0,0,0.15);}", p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void StringsInProperty()
         {
             // from materialize.css
@@ -151,12 +151,12 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
         }
 
-        [Test]
+        [TestMethod]
         public void LinearGradient()
         {
             // from facebook
@@ -164,40 +164,40 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
-            Assert.AreEqual(input.Replace(", ",","), p.ToString());
+            Assert.IsTrue(p.IsValid, "invalid css");
+            Assert.AreEqual(input.Replace(", ", ","), p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void Rem()
         {
-            
+
             // from materialize.css
             var input = "textarea{width:calc(100% - 3rem);}";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
-            Assert.AreEqual(input.Replace(" - ","-"), p.ToString());
+            Assert.IsTrue(p.IsValid, "invalid css");
+            Assert.AreEqual(input.Replace(" - ", "-"), p.ToString());
         }
 
-        [Test]
+        [TestMethod]
         public void GumbyComment()
         {
             var input = "@charset \"UTF-8\";\n/*  */\n@import url(url);";
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
         }
 
-        [Test]
+        [TestMethod]
         public void InvalidOscaro()
         {
 
@@ -205,68 +205,68 @@ namespace NCss.Tests
             var parser = new StylesheetParser();
             parser.SetContext(input);
             var p = parser.DoParse();
-            Assert.True(parser.End);
+            Assert.IsTrue(parser.End);
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
         }
-        
-        [Test]
+
+        [TestMethod]
         public void LokadBootstrap()
         {
             TestFile("Lokad_Bootstrap");
         }
 
-        [Test]
+        [TestMethod]
         public void Materialize()
         {
             TestFile("materialize");
         }
 
-        [Test]
+        [TestMethod]
         public void Facebook()
         {
             TestFile("facebook");
         }
 
-        [Test]
+        [TestMethod]
         public void Stackoverflow()
         {
             TestFile("stackoverflow");
         }
 
-        [Test]
+        [TestMethod]
         public void Gumby()
         {
-           TestFile("gumby_min");
-           TestFile("gumby",false);
+            TestFile("gumby_min");
+            TestFile("gumby", false);
         }
 
-        [Test]
+        [TestMethod]
         public void Normalize()
         {
             TestFile("normalize", false);
         }
 
-        [Test]
+        [TestMethod]
         public void Oscaro()
         {
             TestFile("oscaro", false);
         }
 
-        [Test]
+        [TestMethod]
         public void Hacks()
         {
             TestFile("hacks", false);
         }
 
-        [Test]
+        [TestMethod]
         public void Foundation()
         {
-           TestFile("foundation.min");
-           TestFile("foundation",false);
+            TestFile("foundation.min");
+            TestFile("foundation", false);
         }
 
-        Stylesheet TestFile(string file, bool testSimilarities=true)
+        Stylesheet TestFile(string file, bool testSimilarities = true)
         {
             var input = GetTestFile(file);
             var parser = new StylesheetParser();
@@ -275,7 +275,7 @@ namespace NCss.Tests
             Assert.IsTrue(parser.End);
             var ir = p.Rules.Where(r => !r.IsValid).ToArray();
             Assert.AreEqual(0, parser.Errors.Count);
-            Assert.True(p.IsValid, "invalid css");
+            Assert.IsTrue(p.IsValid, "invalid css");
             var output = p.ToString();
 
             if (testSimilarities)
@@ -299,7 +299,7 @@ namespace NCss.Tests
                     var p2 = parser.DoParse();
                     Assert.IsTrue(parser.End);
                     Assert.AreEqual(0, parser.Errors.Count);
-                    Assert.True(p2.IsValid, "invalid css on reparse");
+                    Assert.IsTrue(p2.IsValid, "invalid css on reparse");
                     var output2 = p2.ToString();
                     Assert.AreEqual(output, output2);
                 }
