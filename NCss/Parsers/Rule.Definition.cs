@@ -96,7 +96,7 @@ namespace NCss
         }
     }
 
-    internal class ClassRule : Rule
+    public class ClassRule : Rule
     {
         public override void AppendToWithOptions(StringBuilder sb, CssRestitution option)
         {
